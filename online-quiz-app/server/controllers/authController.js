@@ -8,7 +8,7 @@ const register = async (req, res) => {
 
     // Check if user exists
     const connection = await pool.getConnection();
-    
+
     const [existingUser] = await connection.query(
       'SELECT id FROM users WHERE username = ? OR email = ?',
       [username, email]
@@ -21,7 +21,7 @@ const register = async (req, res) => {
 
     // Hash password and create user
     const hashedPassword = await hashPassword(password);
-    
+
     const [result] = await connection.query(
       'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
       [username, email, hashedPassword, role]
@@ -48,10 +48,10 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     const connection = await pool.getConnection();
-    
+
     const [users] = await connection.query(
-      'SELECT id, password, role FROM users WHERE username = ?',
-      [username]
+      'SELECT id, password, role FROM users WHERE username = ? OR email = ?',
+      [username, username]
     );
 
     if (users.length === 0) {
@@ -86,7 +86,7 @@ const login = async (req, res) => {
 const getProfile = async (req, res) => {
   try {
     const connection = await pool.getConnection();
-    
+
     const [users] = await connection.query(
       'SELECT id, username, email, role, created_at FROM users WHERE id = ?',
       [req.user.userId]
