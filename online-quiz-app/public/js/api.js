@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api'; // Relative path for deployment compatibility
 let token = null;
 
 // Helper function to make API calls
