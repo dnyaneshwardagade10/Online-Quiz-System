@@ -1,0 +1,9 @@
+{
+    "name": "online-quiz-app-root",
+    "version": "1.0.0",
+    "description": "Root package to run the server easily",
+    "scripts": {
+        "start": "npm start --prefix server",
+        "install-app": "npm install --prefix server"
+    }
+}
