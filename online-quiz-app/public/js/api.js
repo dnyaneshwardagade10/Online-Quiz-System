@@ -20,13 +20,24 @@ async function apiCall(method, endpoint, data = null) {
 
     try {
         const response = await fetch(`${API_URL}${endpoint}`, options);
-        const result = await response.json();
 
-        if (!response.ok) {
-            throw new Error(result.error || 'API Error');
+        // check for JSON response
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            const result = await response.json();
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.dispatchEvent(new Event('auth:unauthorized'));
+                }
+                throw new Error(result.error || 'API Error');
+            }
+            return result;
+        } else {
+            // Read text if not JSON (e.g. HTML error page)
+            const text = await response.text();
+            console.error("Non-JSON API Response:", text); // Log to console for debugging
+            throw new Error(`Server Error (${response.status}): The server returned an invalid response. Check console.`);
         }
-
-        return result;
     } catch (error) {
         console.error('API Error:', error);
         throw error;
