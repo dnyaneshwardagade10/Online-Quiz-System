@@ -4,3 +4,4 @@ node_modules
 *.sql
 import-cloud.js
 export-dbs.js
+student-management-system/
